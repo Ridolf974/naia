@@ -80,7 +80,7 @@
 <script type="text/babel" data-presets="react">
 
 // ─── CONFIG ───────────────────────────────────────────────────────────────────
-const NAIA_API_URL = "https://europe-west1-ecosysteme-rodolphe.cloudfunctions.net/naiaChat";
+const NAIA_API_URL = "https://europe-west1-formasodia-clinifutur.cloudfunctions.net/naiaChat";
 
 // ─── EXEMPLES STATIQUES PAR RÉPONSE ──────────────────────────────────────────
 const FOLLOW_UPS = {
@@ -158,7 +158,6 @@ function computeProfile(answers, name) {
   return { name:name||"", pain:answers[0]||"—", size:answers[2]||"—", digital, ambition, timing, blockerMsg:blockerMsgs[answers[5]]||"On construira quelque chose fait pour vous." };
 }
 
-// ─── APPEL À LA CLOUD FUNCTION ────────────────────────────────────────────────
 async function generateNaiaAck(questionIndex, answer, allAnswers, name) {
   const contextParts = [];
   if (name) contextParts.push("Prénom : " + name);
@@ -186,7 +185,6 @@ async function generateNaiaAck(questionIndex, answer, allAnswers, name) {
   }
 }
 
-// ─── COMPOSANT PRINCIPAL ──────────────────────────────────────────────────────
 function App() {
   const [msgs, setMsgs] = React.useState([]);
   const [phase, setPhase] = React.useState("idle");
