@@ -49,7 +49,7 @@ jobs:
 
       - name: Allow unauthenticated access
         run: |
-          gcloud run services add-iam-policy-binding naiaChat \
+          gcloud run services add-iam-policy-binding naiachat \
             --region=europe-west1 \
             --member=allUsers \
             --role=roles/run.invoker \
