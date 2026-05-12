@@ -1,0 +1,42 @@
+name: Déployer la fonction Naïa
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'functions/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to Cloud Functions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Deploy Cloud Function
+        uses: google-github-actions/deploy-cloud-functions@v3
+        with:
+          name: naiaChat
+          runtime: nodejs20
+          region: europe-west1
+          source_dir: functions
+          entry_point: naiaChat
+          project_id: ecosysteme-rodolphe
+          environment_variables: |-
+            ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
+          min_instance_count: 0
+          max_instance_count: 10
+          available_memory: 256M
+          timeout: 60s
+          ingress_settings: ALLOW_ALL
+          labels: |-
+            app=naia
+            env=production
