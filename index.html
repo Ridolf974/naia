@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Échange avec Naïa</title>
+<meta name="description" content="Découvrez Naïa, l'assistante IA de Rodolphe. 3 minutes de conversation pour préparer votre rendez-vous.">
+
+<!-- React + Babel via CDN -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,400&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito',sans-serif;}
+  .root{min-height:100vh;background:linear-gradient(150deg,#bcd8ed 0%,#d8edf8 50%,#e8f4fc 100%);display:flex;align-items:center;justify-content:center;padding:16px;}
+  .phone{width:100%;max-width:400px;background:#ecf4fb;border-radius:36px;box-shadow:0 20px 60px rgba(15,48,80,0.18),0 2px 8px rgba(15,48,80,0.07);overflow:hidden;display:flex;flex-direction:column;height:min(720px,92vh);}
+  .sbar{background:#0f2e45;padding:10px 22px 6px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+  .sbar-t{color:rgba(255,255,255,0.6);font-size:11px;font-weight:600;}
+  .sbar-i{color:rgba(255,255,255,0.4);font-size:10px;letter-spacing:3px;}
+  .cbar{background:#0f2e45;padding:8px 16px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,0.05);flex-shrink:0;}
+  .back{color:rgba(255,255,255,0.4);font-size:22px;line-height:1;}
+  .av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#3d84b8,#1a5080);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:#fff;font-family:'Fraunces',serif;flex-shrink:0;box-shadow:0 0 0 2.5px rgba(255,255,255,0.15);}
+  .cn{color:#fff;font-size:15px;font-weight:700;letter-spacing:-.2px;}
+  .cs{color:rgba(255,255,255,0.4);font-size:11px;margin-top:1px;min-height:15px;}
+  .more{color:rgba(255,255,255,0.3);font-size:18px;margin-left:auto;letter-spacing:1px;}
+  .msgs{flex:1;overflow-y:auto;padding:14px 12px 8px;display:flex;flex-direction:column;gap:3px;scroll-behavior:smooth;}
+  .msgs::-webkit-scrollbar{width:0;}
+  .dlabel{text-align:center;font-size:10.5px;color:#7aaabf;margin:4px 0 10px;font-weight:500;}
+  .ml{display:flex;align-items:flex-end;gap:6px;animation:bI .22s ease both;}
+  .mr{display:flex;justify-content:flex-end;animation:bR .2s ease both;}
+  .avsm{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#3d84b8,#1a5080);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;margin-bottom:2px;font-family:'Fraunces',serif;}
+  .bl{background:#fff;border-radius:18px 18px 18px 4px;padding:10px 14px;color:#0d2a3e;font-size:14px;line-height:1.52;max-width:82%;box-shadow:0 1px 5px rgba(15,48,80,0.08);}
+  .br{background:linear-gradient(135deg,#2875a8,#175280);border-radius:18px 18px 4px 18px;padding:10px 14px;color:#fff;font-size:14px;line-height:1.5;max-width:82%;box-shadow:0 2px 8px rgba(23,82,128,0.28);}
+  .tw{display:flex;align-items:flex-end;gap:6px;animation:bI .18s ease both;}
+  .tb{background:#fff;border-radius:18px 18px 18px 4px;padding:12px 15px;display:flex;gap:5px;align-items:center;box-shadow:0 1px 5px rgba(15,48,80,0.08);}
+  .td{width:7px;height:7px;border-radius:50%;background:#9dc8de;}
+  .td:nth-child(1){animation:td 1.1s 0s infinite;}
+  .td:nth-child(2){animation:td 1.1s .18s infinite;}
+  .td:nth-child(3){animation:td 1.1s .36s infinite;}
+  .rc{background:linear-gradient(150deg,#0f2e45,#1a5080);border-radius:18px;padding:16px;box-shadow:0 4px 18px rgba(15,48,80,0.28);}
+  .rt{color:#fff;font-size:14px;font-weight:700;margin-bottom:10px;}
+  .rr{background:rgba(255,255,255,0.1);border-radius:11px;padding:9px 13px;margin-bottom:5px;}
+  .rr:last-child{margin-bottom:0;}
+  .rl{color:rgba(255,255,255,0.48);font-size:9.5px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px;font-weight:600;}
+  .rv{color:#fff;font-size:12.5px;font-weight:600;}
+  .iarea{background:#fff;border-top:1px solid #cde5f2;padding:10px 12px 14px;flex-shrink:0;}
+  .ilbl{font-size:11px;color:#86b4ca;text-align:center;margin-bottom:7px;font-weight:500;}
+  .clist{display:flex;flex-direction:column;gap:5px;}
+  .cbtn{background:#eef7fd;border:1.5px solid #b8ddef;border-radius:22px;padding:9px 16px;font-size:13px;font-family:'Nunito',sans-serif;color:#0d2a3e;font-weight:500;cursor:pointer;text-align:left;transition:all .15s;line-height:1.35;}
+  .cbtn:hover{background:#d5ecf8;border-color:#4aaad0;transform:translateX(3px);}
+  .cbtn.oth{font-style:italic;color:#2875a8;}
+  .yesno{display:flex;gap:8px;}
+  .yesno .cbtn{flex:1;text-align:center;font-weight:600;}
+  .owrap{display:flex;gap:6px;margin-top:2px;}
+  .oinp{flex:1;background:#eef7fd;border:1.5px solid #4aaad0;border-radius:16px;padding:9px 14px;font-size:13px;font-family:'Nunito',sans-serif;color:#0d2a3e;outline:none;}
+  .oinp::placeholder{color:#9abece;}
+  .osnd{background:linear-gradient(135deg,#2875a8,#175280);border:none;border-radius:16px;padding:9px 16px;color:#fff;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;white-space:nowrap;transition:all .15s;}
+  .osnd:hover{transform:scale(1.04);}
+  .osnd:disabled{opacity:.4;cursor:default;}
+  .ctaarea{background:#fff;border-top:1px solid #cde5f2;padding:10px 12px 16px;flex-shrink:0;}
+  .ctabtn{background:#0f2e45;color:#fff;border:none;border-radius:18px;padding:14px;font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;width:100%;transition:all .2s;}
+  .ctabtn:hover{background:#1a5080;transform:translateY(-1px);}
+  .ctanote{text-align:center;font-size:11px;color:#86b4ca;padding:6px 12px 12px;background:#fff;}
+  .startarea{background:#fff;border-top:1px solid #cde5f2;padding:12px;flex-shrink:0;}
+  .startbtn{background:linear-gradient(135deg,#2875a8,#175280);color:#fff;border:none;border-radius:18px;padding:14px;font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;width:100%;box-shadow:0 4px 16px rgba(23,82,128,0.26);transition:all .2s;}
+  .startbtn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(23,82,128,0.34);}
+  @keyframes bI{from{opacity:0;transform:translateY(7px) scale(.97);}to{opacity:1;transform:none;}}
+  @keyframes bR{from{opacity:0;transform:translateY(5px) translateX(6px);}to{opacity:1;transform:none;}}
+  @keyframes td{0%,60%,100%{transform:translateY(0);opacity:.3;}30%{transform:translateY(-5px);opacity:1;}}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script type="text/babel" data-presets="react">
+
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+const NAIA_API_URL = "https://europe-west1-ecosysteme-rodolphe.cloudfunctions.net/naiaChat";
+
+const { useState, useRef } = React;
+
+// ─── EXEMPLES STATIQUES PAR RÉPONSE ──────────────────────────────────────────
+const FOLLOW_UPS = {
+  "Répondre à mes mails": "Chez BNP Paribas, des équipes ont réduit de 25% leur temps sur les mails avec l'IA. Répondre en 2 clics là où ça prenait 20 min… ça change une journée. 📧",
+  "Rédiger des documents": "Sanofi a développé une IA interne qui réduit la rédaction de leurs rapports de 120h à 15h. Le même principe s'applique à n'importe quel document. 📄",
+  "Chercher et synthétiser des infos": "Decathlon synthétise des centaines de retours clients en 20 minutes avec l'IA, contre une journée entière avant. 🔍",
+  "Planifier / organiser": "Des cabinets médicaux aux agences immo — l'IA qui gère les plannings peut libérer jusqu'à 1h30 par jour. 📅",
+  "Gérer mes clients / partenaires": "Alan, la startup assurance santé, a automatisé 60% de ses réponses clients. Des équipes qui gèrent 3x plus de contacts, sans embaucher. ⭐",
+  "Développer mon activité": "Une PME de 3 personnes à Toulouse a triplé sa prod de contenus marketing — leads +89% en quelques mois. 🚀",
+  "Mieux communiquer avec mes clients": "Fireflies.ai génère des comptes-rendus automatiquement. Des équipes chez Decathlon envoient des suivis clients dans la minute. ✍️",
+  "Former ou encadrer mes équipes": "Selon LinkedIn Learning, les formations assistées par l'IA réduisent de 40% le temps de montée en compétences. 🎓",
+  "Suivre correctement mes dossiers": "Chez Société Générale, l'IA synthétise l'état des dossiers chaque matin. 45 min de travail en 5 min. 📋",
+  "Simplement souffler un peu": "C'est la raison n°1 des dirigeants. L'IA, c'est 2h à 4h par semaine récupérées sur les tâches qu'on déteste. 😊",
+  "La confidentialité des données": "Il existe des configurations sans aucun stockage de vos données. On en parlera en détail, c'est une vraie priorité. 🔒",
+  "Le temps d'apprendre": "GitHub Copilot adopté par 90% des devs de Microsoft en moins de 3 mois. Avec un bon accompagnement, c'est bien plus rapide qu'on croit. ⏱",
+  "Le coût": "Les outils de base : entre 20€ et 50€/mois. Selon McKinsey, ROI moyen +240% dès 6 mois. 💶",
+  "Je ne sais pas par où commencer 🤷": "C'est exactement pour ça qu'on se rencontre. C'est mon boulot de rendre ça clair et concret. 😊",
+  "Convaincre mon équipe": "Chez L'Oréal, l'adoption de l'IA a démarré par 3 personnes convaincues qui ont embarqué le reste. 🤝",
+  "Gagner du temps sur des tâches précises": "Meilleur point d'entrée. Un quick win visible en 2 semaines, et tout le monde y croit. Sanofi a commencé comme ça. 🎯",
+  "Simplifier ma communication au quotidien": "Une agence de 5 personnes a réduit de 70% son temps de prod de contenus avec ChatGPT. Publications, mails, CR — tout y passe. ✍️",
+  "Automatiser des tâches répétitives": "Make.com + ChatGPT automatisent des workflows entiers sans coder. Des PME récupèrent jusqu'à 62% de temps. ⚙️",
+  "Être guidé(e) pas à pas": "IBM a montré que les structures accompagnées obtiennent un ROI 3x plus élevé que celles qui y vont seules. 🤝",
+  "Aller plus loin dans mon usage actuel": "Les utilisateurs avancés accompagnés découvrent souvent des cas d'usage inattendus qui changent vraiment leur quotidien. 🚀",
+  "Explorer tout ce qui est possible": "J'adore cette posture. C'est souvent celle qui donne les transformations les plus profondes. 🚀",
+};
+
+const QUESTIONS = [
+  { id:1, messages:["Première question !","Dans votre quotidien, quelle tâche vous coûte le plus de temps ?"], choices:["Répondre à mes mails","Rédiger des documents","Chercher et synthétiser des infos","Planifier / organiser","Gérer mes clients / partenaires"], hasOther:true },
+  { id:2, messages:["Et ce manque de temps vous empêche surtout de faire quoi ?"], choices:["Développer mon activité","Mieux communiquer avec mes clients","Former ou encadrer mes équipes","Suivre correctement mes dossiers","Simplement souffler un peu"], hasOther:true },
+  { id:3, messages:["Votre structure, c'est plutôt…"], choices:["Juste moi (indépendant / auto-entrepreneur)","2 à 10 personnes","10 à 50 personnes","Plus de 50 personnes"], hasOther:false },
+  { id:4, messages:["Les outils numériques en général, c'est comment pour vous ?"], choices:["À l'aise, j'aime ça ✅","Ça dépend de l'outil","Je me débrouille","Franchement pas mon truc"], hasOther:false },
+  { id:5, messages:["ChatGPT ou les assistants IA, vous avez déjà essayé ?"], choices:["Jamais, je ne sais pas ce que c'est","J'en ai entendu parler","J'ai essayé une ou deux fois","Oui, je l'utilise déjà"], hasOther:false },
+  { id:6, messages:["Si on vous proposait d'utiliser l'IA demain dans votre travail, quel serait votre principal frein ?"], choices:["La confidentialité des données","Le temps d'apprendre","Le coût","Je ne sais pas par où commencer 🤷","Convaincre mon équipe"], hasOther:true },
+  { id:7, messages:["Si l'IA pouvait vraiment vous aider — ce serait pour quoi en priorité ?"], choices:["Gagner du temps sur des tâches précises","Simplifier ma communication au quotidien","Automatiser des tâches répétitives","Être guidé(e) pas à pas","Explorer tout ce qui est possible"], hasOther:true },
+  { id:8, messages:["Dernière question, promis 🙂","Côté timing, vous en êtes où ?"], choices:["Je cherche une solution maintenant","D'ici quelques mois","Je suis en train d'explorer","Pas d'urgence, juste curieux(se)"], hasOther:false },
+];
+
+const Q_LABELS = ["tâche chronophage","impact du manque de temps","taille de structure","aisance numérique","expérience IA","frein principal","ambition IA","timing"];
+
+const AI_LEVELS  = ["Jamais, je ne sais pas ce que c'est","J'en ai entendu parler","J'ai essayé une ou deux fois","Oui, je l'utilise déjà"];
+const DIG_LEVELS = ["Franchement pas mon truc","Je me débrouille","Ça dépend de l'outil","À l'aise, j'aime ça ✅"];
+
+function aiLevel(a){ return AI_LEVELS.indexOf(a[4]||""); }
+function digitalLevel(a){ return DIG_LEVELS.indexOf(a[3]||""); }
+
+function getAdaptedQuestion(qIndex, answers) {
+  const q = QUESTIONS[qIndex];
+  const ai = aiLevel(answers);
+  const dig = digitalLevel(answers);
+  if (qIndex === 5) {
+    let messages=[...q.messages], choices=[...q.choices];
+    if(ai>=3){ messages=["Vous utilisez déjà l'IA — qu'est-ce qui vous freine pour aller encore plus loin ?"]; choices=choices.filter(c=>c!=="Je ne sais pas par où commencer 🤷"&&c!=="Le temps d'apprendre"); }
+    else if(ai>=2){ choices=choices.filter(c=>c!=="Je ne sais pas par où commencer 🤷"); if(dig>=2) choices=choices.filter(c=>c!=="Le temps d'apprendre"); }
+    return {...q,messages,choices};
+  }
+  if (qIndex === 6) {
+    let messages=[...q.messages], choices=[...q.choices];
+    if(ai>=3){ messages=["Et si l'IA pouvait faire encore plus pour vous, ce serait quoi en priorité ?"]; choices=choices.map(c=>c==="Être guidé(e) pas à pas"?"Aller plus loin dans mon usage actuel":c); }
+    else if(ai>=2){ messages=["On y est presque ! Si l'IA pouvait vraiment vous aider — ce serait pour quoi en priorité ?"]; }
+    return {...q,messages,choices};
+  }
+  return q;
+}
+
+function computeProfile(answers, name) {
+  const di=DIG_LEVELS.indexOf(answers[3]||""), mi=AI_LEVELS.indexOf(answers[4]||"");
+  const score=(di>=0?di:1)+(mi>=0?mi:0);
+  const digital=score<=1?"Novice curieux 🌱":score<=3?"Intermédiaire ouvert 🔵":"À l'aise avec le digital ✦";
+  const ambCh=["Gagner du temps sur des tâches précises","Simplifier ma communication au quotidien","Automatiser des tâches répétitives","Être guidé(e) pas à pas","Aller plus loin dans mon usage actuel","Explorer tout ce qui est possible"];
+  const ai=ambCh.indexOf(answers[6]||"");
+  const ambition=ai<=1?"Approche prudente 🎯":ai<=3?"Ouvert(e) à la transition 🚀":"Vision ambitieuse ⚡";
+  const timingMap={"Je cherche une solution maintenant":"🔴 Besoin immédiat","D'ici quelques mois":"🟡 Projet à moyen terme","Je suis en train d'explorer":"🟢 Phase d'exploration","Pas d'urgence, juste curieux(se)":"⚪ Curiosité à nourrir"};
+  const timing=timingMap[answers[7]]||answers[7]||"—";
+  const blockerMsgs={"La confidentialité des données":"Sécurité et confidentialité à traiter en priorité.","Le temps d'apprendre":"Accompagnement progressif, à votre rythme.","Le coût":"Solutions adaptées à votre budget.","Je ne sais pas par où commencer 🤷":"C'est exactement l'objet de notre rendez-vous.","Convaincre mon équipe":"Stratégie d'embarquement à construire ensemble."};
+  return { name:name||"", pain:answers[0]||"—", size:answers[2]||"—", digital, ambition, timing, blockerMsg:blockerMsgs[answers[5]]||"On construira quelque chose fait pour vous." };
+}
+
+// ─── APPEL À LA CLOUD FUNCTION ────────────────────────────────────────────────
+async function generateNaiaAck(questionIndex, answer, allAnswers, name) {
+  const contextParts = [];
+  if (name) contextParts.push("Prénom : " + name);
+  allAnswers.slice(0, questionIndex).forEach((a, i) => {
+    if (a) contextParts.push(Q_LABELS[i] + " -> " + a);
+  });
+  const context = contextParts.length ? contextParts.join(" / ") : "premier échange";
+  const question = QUESTIONS[questionIndex].messages[QUESTIONS[questionIndex].messages.length - 1];
+
+  try {
+    const res = await fetch(NAIA_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ context, question, answer })
+    });
+    if (!res.ok) {
+      console.error("Naïa API error:", res.status);
+      return "Bien noté 👌";
+    }
+    const data = await res.json();
+    return data.text || "Bien noté 👌";
+  } catch (err) {
+    console.error("Naïa fetch error:", err);
+    return "Bien noté 👌";
+  }
+}
+
+// ─── COMPOSANT PRINCIPAL ──────────────────────────────────────────────────────
+function App() {
+  const [msgs, setMsgs] = useState([]);
+  const [phase, setPhase] = useState("idle");
+  const [isTyping, setIsTyping] = useState(false);
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState([]);
+  const [showChoices, setShowChoices] = useState(false);
+  const [currentChoices, setCurrentChoices] = useState([]);
+  const [currentHasOther, setCurrentHasOther] = useState(false);
+  const [showOther, setShowOther] = useState(false);
+  const [otherVal, setOtherVal] = useState("");
+  const [done, setDone] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [nameInput, setNameInput] = useState("");
+  const [showNameInput, setShowNameInput] = useState(false);
+  const [showYesNo, setShowYesNo] = useState(false);
+  const bottomRef = useRef(null);
+  const idRef = useRef(0);
+
+  const scroll = () => setTimeout(() => bottomRef.current?.scrollIntoView({behavior:"smooth"}), 50);
+  const addMsg = (m) => { const id = ++idRef.current; setMsgs(p => [...p, {...m, id}]); scroll(); };
+  const runSeq = (steps) => { let t = 0; steps.forEach(s => { t += s.delay; setTimeout(s.action, t); }); };
+  const typeMsg = (text, ms=900) => [
+    { delay: 0,  action: () => { setIsTyping(true); scroll(); } },
+    { delay: ms, action: () => { setIsTyping(false); addMsg({side:"left", text}); } },
+  ];
+  const showTyping = () => { setIsTyping(true); scroll(); };
+  const hideTyping = (text) => { setIsTyping(false); addMsg({side:"left", text}); scroll(); };
+  const delay = (ms) => new Promise(r => setTimeout(r, ms));
+
+  const runIntro = () => {
+    setPhase("intro");
+    let seq = [];
+    seq = seq.concat(typeMsg("Bonjour ! 👋", 800));
+    seq.push({delay:200, action:()=>{}});
+    seq = seq.concat(typeMsg("Je suis Naïa, assistante spécialisée en accompagnement IA.", 1800));
+    seq.push({delay:200, action:()=>{}});
+    seq = seq.concat(typeMsg("Avant qu'on commence — comment puis-je vous appeler ?", 1400));
+    seq.push({delay:300, action:()=>{ setShowNameInput(true); setPhase("name_input"); scroll(); }});
+    runSeq(seq);
+  };
+
+  const submitName = () => {
+    const name = nameInput.trim();
+    if (!name) return;
+    setShowNameInput(false);
+    setNameInput("");
+    setUserName(name);
+    addMsg({side:"right", text:name});
+    let seq = [];
+    seq = seq.concat(typeMsg("Enchantée, " + name + " ! 😊", 800));
+    seq.push({delay:300, action:()=>{}});
+    seq = seq.concat(typeMsg("Une petite question avant de démarrer — est-ce votre premier échange avec un véritable assistant IA ?", 1600));
+    seq.push({delay:300, action:()=>{ setShowYesNo(true); setPhase("yesno"); scroll(); }});
+    runSeq(seq);
+  };
+
+  const handleFirstAI = (isFirst) => {
+    setShowYesNo(false);
+    addMsg({side:"right", text: isFirst ? "Oui, première fois" : "Non, j'ai déjà testé"});
+    let seq = [];
+    if (isFirst) {
+      seq = seq.concat(typeMsg("Bienvenue dans le club ! 🎉 Pas de pression — je suis là pour que ça reste simple et utile.", 1500));
+    } else {
+      seq = seq.concat(typeMsg("Ah, vous connaissez déjà la maison ! On va aller droit à l'essentiel alors. 😄", 1400));
+    }
+    seq.push({delay:400, action:()=>{}});
+    seq = seq.concat(typeMsg("Je vous pose quelques questions sur votre quotidien — 3 minutes max, promis.", 1400));
+    seq.push({delay:300, action:()=>setPhase("ready")});
+    runSeq(seq);
+  };
+
+  const runStep = (s, currentAnswers, name) => {
+    const adapted = getAdaptedQuestion(s, currentAnswers || []);
+    setCurrentChoices(adapted.choices);
+    setCurrentHasOther(adapted.hasOther);
+    let seq = [];
+    adapted.messages.forEach((txt, i) => {
+      seq = seq.concat(typeMsg(txt, i === 0 ? 1000 : 800));
+      if (i < adapted.messages.length - 1) seq.push({delay:250, action:()=>{}});
+    });
+    seq.push({delay:400, action:()=>{ setShowChoices(true); setPhase("choices"); scroll(); }});
+    runSeq(seq);
+  };
+
+  const handleChoice = (choice) => {
+    if (choice === "__other__") { setShowChoices(false); setShowOther(true); setPhase("other"); return; }
+    submitAnswer(choice);
+  };
+
+  const submitAnswer = async (answer) => {
+    const currentStep = step;
+    setShowChoices(false);
+    setShowOther(false);
+    setOtherVal("");
+    addMsg({side:"right", text:answer});
+    const updated = [...answers, answer];
+    setAnswers(updated);
+
+    // 1. Naïa génère sa vraie réaction via Cloud Function
+    showTyping();
+    const ack = await generateNaiaAck(currentStep, answer, updated, userName);
+    hideTyping(ack);
+
+    // 2. Exemple statique vérifié si disponible
+    const followUp = FOLLOW_UPS[answer];
+    if (followUp) {
+      await delay(350);
+      showTyping();
+      await delay(1000);
+      hideTyping(followUp);
+    }
+
+    const isLast = currentStep === QUESTIONS.length - 1;
+    if (!isLast) {
+      await delay(500);
+      setStep(currentStep + 1);
+      runStep(currentStep + 1, updated, userName);
+    } else {
+      await delay(400);
+      showTyping();
+      await delay(1000);
+      const closing = userName
+        ? "Super " + userName + ", j'ai tout ce qu'il me faut 😊 Voilà ce que je retiens de vous :"
+        : "Super, j'ai tout ce qu'il me faut 😊 Voilà ce que je retiens de vous :";
+      hideTyping(closing);
+      await delay(400);
+      addMsg({side:"result", profile: computeProfile(updated, userName)});
+      setDone(true);
+      setPhase("done");
+      scroll();
+    }
+  };
+
+  return (
+    <div className="root">
+      <div className="phone">
+        <div className="sbar">
+          <span className="sbar-t">9:41</span>
+          <span className="sbar-i">▲ ●●●</span>
+        </div>
+        <div className="cbar">
+          <span className="back">‹</span>
+          <div className="av">N</div>
+          <div>
+            <div className="cn">Naïa</div>
+            <div className="cs">{isTyping ? "⌨️ En train d'écrire…" : phase === "idle" ? "IA Conseil" : "● En ligne"}</div>
+          </div>
+          <span className="more">···</span>
+        </div>
+        <div className="msgs">
+          <div className="dlabel">Aujourd'hui</div>
+          {phase === "idle" && (
+            <div style={{flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"32px 20px", gap:"12px", textAlign:"center"}}>
+              <div style={{width:"52px", height:"52px", borderRadius:"50%", background:"linear-gradient(135deg,#3d84b8,#1a5080)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"22px", fontWeight:700, color:"#fff", fontFamily:"Fraunces,serif", boxShadow:"0 4px 16px rgba(26,80,128,0.25)"}}>N</div>
+              <div style={{fontSize:"15px", fontWeight:700, color:"#0d2a3e"}}>Naïa — Experte IA</div>
+              <div style={{fontSize:"13px", color:"#5a8faa", lineHeight:"1.6", maxWidth:"260px"}}>Démarrez votre échange pour que je puisse mieux comprendre votre quotidien avant notre rendez-vous.</div>
+              <div style={{display:"flex", gap:"8px", flexWrap:"wrap", justifyContent:"center", marginTop:"4px"}}>
+                {["⏱ 3 minutes", "8 questions", "🔒 Confidentiel"].map(c => (
+                  <span key={c} style={{background:"#dff0fb", border:"1px solid #b8ddef", borderRadius:"20px", padding:"4px 12px", fontSize:"11px", color:"#2875a8", fontWeight:600}}>{c}</span>
+                ))}
+              </div>
+            </div>
+          )}
+          {msgs.map(m => {
+            if (m.side === "left") return (<div className="ml" key={m.id}><div className="avsm">N</div><div className="bl">{m.text}</div></div>);
+            if (m.side === "right") return (<div className="mr" key={m.id}><div className="br">{m.text}</div></div>);
+            if (m.side === "result") {
+              const p = m.profile;
+              return (
+                <div className="ml" key={m.id}>
+                  <div className="avsm">N</div>
+                  <div className="rc">
+                    <div className="rt">{p.name ? "Votre profil, " + p.name + " ✨" : "Votre profil ✨"}</div>
+                    <div className="rr"><div className="rl">Douleur principale</div><div className="rv">{p.pain}</div></div>
+                    <div className="rr"><div className="rl">Taille de structure</div><div className="rv">{p.size}</div></div>
+                    <div className="rr"><div className="rl">Profil numérique</div><div className="rv">{p.digital}</div></div>
+                    <div className="rr"><div className="rl">Niveau d'ambition</div><div className="rv">{p.ambition}</div></div>
+                    <div className="rr"><div className="rl">Timing</div><div className="rv">{p.timing}</div></div>
+                    <div className="rr"><div className="rl">Point d'attention</div><div className="rv">{p.blockerMsg}</div></div>
+                  </div>
+                </div>
+              );
+            }
+            return null;
+          })}
+          {isTyping && (<div className="tw" key="typing"><div className="avsm">N</div><div className="tb"><div className="td"/><div className="td"/><div className="td"/></div></div>)}
+          <div ref={bottomRef}/>
+        </div>
+        {phase === "idle" && (<div className="startarea"><button className="startbtn" onClick={runIntro}>Commencer la conversation →</button></div>)}
+        {phase === "ready" && (<div className="startarea"><button className="startbtn" onClick={()=>{ setPhase("running"); runStep(0, [], userName); }}>C'est parti ! →</button></div>)}
+        {showNameInput && (
+          <div className="iarea">
+            <div className="ilbl">Tapez votre prénom</div>
+            <div className="owrap">
+              <input className="oinp" placeholder="Votre prénom…" value={nameInput}
+                onChange={e=>setNameInput(e.target.value)}
+                onKeyDown={e=>e.key==="Enter"&&nameInput.trim()&&submitName()}
+                autoFocus/>
+              <button className="osnd" onClick={submitName} disabled={!nameInput.trim()}>Envoyer</button>
+            </div>
+          </div>
+        )}
+        {showYesNo && (
+          <div className="iarea">
+            <div className="ilbl">Choisissez une réponse</div>
+            <div className="yesno">
+              <button className="cbtn" onClick={()=>handleFirstAI(true)}>Oui, première fois</button>
+              <button className="cbtn" onClick={()=>handleFirstAI(false)}>Non, j'ai déjà testé</button>
+            </div>
+          </div>
+        )}
+        {showChoices && !done && (
+          <div className="iarea">
+            <div className="ilbl">Choisissez une réponse</div>
+            <div className="clist">
+              {currentChoices.map((c, i) => (<button key={i} className="cbtn" onClick={()=>handleChoice(c)}>{c}</button>))}
+              {currentHasOther && (<button className="cbtn oth" onClick={()=>handleChoice("__other__")}>✏️ Autre…</button>)}
+            </div>
+          </div>
+        )}
+        {showOther && !done && (
+          <div className="iarea">
+            <div className="ilbl">Précisez en quelques mots</div>
+            <div className="owrap">
+              <input className="oinp" placeholder="Votre réponse…" value={otherVal}
+                onChange={e=>setOtherVal(e.target.value)}
+                onKeyDown={e=>e.key==="Enter"&&otherVal.trim()&&submitAnswer(otherVal.trim())}
+                autoFocus/>
+              <button className="osnd" onClick={()=>otherVal.trim()&&submitAnswer(otherVal.trim())} disabled={!otherVal.trim()}>Envoyer</button>
+            </div>
+          </div>
+        )}
+        {done && (
+          <>
+            <div className="ctaarea"><button className="ctabtn">Prendre rendez-vous avec Rodolphe →</button></div>
+            <div className="ctanote">Vos réponses restent confidentielles.</div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("app")).render(<App />);
+
+</script>
+</body>
+</html>

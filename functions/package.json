@@ -1,0 +1,16 @@
+{
+  "name": "naia-function",
+  "version": "1.0.0",
+  "description": "Cloud Function proxy pour Naïa — appels API Anthropic sécurisés",
+  "main": "index.js",
+  "engines": {
+    "node": "20"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.4.5"
+  },
+  "scripts": {
+    "start": "functions-framework --target=naiaChat --port=8080"
+  },
+  "private": true
+}
