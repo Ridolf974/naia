@@ -49,8 +49,8 @@ jobs:
 
       - name: Allow unauthenticated access
         run: |
-          gcloud run services add-iam-policy-binding naiachat \
+          gcloud functions add-iam-policy-binding naiaChat \
             --region=europe-west1 \
             --member=allUsers \
-            --role=roles/run.invoker \
+            --role=roles/cloudfunctions.invoker \
             --project=ecosysteme-rodolphe
