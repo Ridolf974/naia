@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'functions/**'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 jobs:
@@ -20,6 +21,11 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ecosysteme-rodolphe
 
       - name: Deploy Cloud Function
         uses: google-github-actions/deploy-cloud-functions@v3
@@ -40,3 +46,11 @@ jobs:
           labels: |-
             app=naia
             env=production
+
+      - name: Allow unauthenticated access
+        run: |
+          gcloud run services add-iam-policy-binding naiaChat \
+            --region=europe-west1 \
+            --member=allUsers \
+            --role=roles/run.invoker \
+            --project=ecosysteme-rodolphe
