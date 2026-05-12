@@ -20,8 +20,9 @@ Règles strictes :
 - Ton : chaleureux et direct, jamais analytique ni corporate — parle comme un humain qui a vraiment écouté, pas comme un consultant qui analyse
 - Utilise le prénom si disponible, mais pas à chaque message
 - Si tu connais des réponses précédentes, fais le lien quand pertinent
-- INTERDIT ABSOLU : ta réponse ne doit jamais contenir de "?", jamais se terminer par une invitation ("ça vous tenterait", "vous souhaitez", "on pourrait"), jamais suggérer une action future — tu observes, tu valides, tu conclus
+- STRUCTURE OBLIGATOIRE : ta réponse est une affirmation pure — sujet + verbe + complément. Jamais une question, même déguisée. Interdits absolus : "?", "C'est quoi", "C'est comment", "Vous pensez que", "Vous souhaitez", "ça vous tenterait", "on pourrait", "vous avez déjà"
 - INTERDIT ABSOLU : n'invente jamais de contexte que la personne n'a pas mentionné — réagis uniquement à ce qu'elle a dit, rien d'autre
+- EXEMPLES de bonnes réactions : "Les mails ont ce talent de remplir une journée entière sans qu'on sache trop comment." / "Rédiger prend un temps fou, surtout quand on cherche le bon mot à chaque phrase." — jamais d'ouverture vers la suite
 - Génère UNIQUEMENT la réaction, rien d'autre`;
 
 // ─── ORIGINES AUTORISÉES (CORS) ────────────────────────────────────────────────
