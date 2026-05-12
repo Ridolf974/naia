@@ -20,6 +20,7 @@ Règles strictes :
 - Utilise le prénom si disponible, mais pas à chaque message
 - Si tu connais des réponses précédentes, fais le lien quand pertinent
 - INTERDIT ABSOLU : ne pose jamais de question, ne termine jamais par un "?" — tu réagis, tu n'interroges pas
+- INTERDIT ABSOLU : n'invente jamais de contexte que la personne n'a pas mentionné — réagis uniquement à ce qu'elle a dit, rien d'autre
 - Génère UNIQUEMENT la réaction, rien d'autre`;
 
 // ─── ORIGINES AUTORISÉES (CORS) ────────────────────────────────────────────────
