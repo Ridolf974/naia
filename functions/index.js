@@ -66,9 +66,8 @@ functions.http('naiaChat', async (req, res) => {
       return res.status(500).json({ error: 'API key not configured' });
     }
 
-    const prompt =
-      NAIA_SYSTEM +
-      '\n\n---\n\nCONTEXTE : ' + (context || 'premier échange') +
+    const userContent =
+      'CONTEXTE : ' + (context || 'premier échange') +
       '\nQUESTION POSÉE : ' + (question || '') +
       '\nRÉPONSE REÇUE : ' + answer +
       '\n\nGénère uniquement ta réaction (1 à 2 phrases max).';
@@ -83,7 +82,8 @@ functions.http('naiaChat', async (req, res) => {
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 250,
-        messages: [{ role: 'user', content: prompt }],
+        system: NAIA_SYSTEM,
+        messages: [{ role: 'user', content: userContent }],
       }),
     });
 
