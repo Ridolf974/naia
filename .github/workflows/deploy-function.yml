@@ -25,7 +25,7 @@ jobs:
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ecosysteme-rodolphe
+          project_id: formaSodia-clinifutur
 
       - name: Deploy Cloud Function
         uses: google-github-actions/deploy-cloud-functions@v3
@@ -35,7 +35,7 @@ jobs:
           region: europe-west1
           source_dir: functions
           entry_point: naiaChat
-          project_id: ecosysteme-rodolphe
+          project_id: formaSodia-clinifutur
           environment_variables: |-
             ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
           min_instance_count: 0
@@ -53,4 +53,4 @@ jobs:
             --region=europe-west1 \
             --member=allUsers \
             --role=roles/run.invoker \
-            --project=ecosysteme-rodolphe
+            --project=formaSodia-clinifutur
